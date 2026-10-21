@@ -79,3 +79,23 @@ php artisan test --testsuite=Feature
 Import: [`docs/postman/Order Processing System API.postman_collection.json`](docs/postman/Order%20Processing%20System%20API.postman_collection.json)
 
 Set `base_url` to `http://127.0.0.1:8000/api`, then run Login/Register (token is saved automatically).
+
+---
+
+## Adding a New Payment Gateway
+
+1. Create a class under `app/Payments/Gateways/` implementing `PaymentGatewayInterface`
+2. Register it in `PaymentGatewayFactory` (`match` arm)
+3. Add an active row in `payment_gateways` (or update the seeder)
+4. Allow the name in `ProcessPaymentRequest` validation
+5. Add `.env` / `config/services.php` keys if needed + a unit test
+
+No changes required in `PaymentController` or core payment orchestration.
+
+---
+
+## Assumptions
+
+- Gateways are **simulated** (no live provider API calls)
+- Successful payment does **not** change `orders.status` — payment records are the source of truth
+- Order update performs a **full item sync** (replace items + recalculate total)
