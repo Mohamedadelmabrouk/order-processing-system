@@ -1,0 +1,2815 @@
+{
+  "info": {
+    "_postman_id": "23903eb2-332e-4f63-a514-325edb1f0556",
+    "name": "Order Processing System API",
+    "description": "API collection for Auth, Orders, and Payments with JWT authentication.\n\nSetup:\n1. Set `base_url` (default: http://127.0.0.1:8000/api)\n2. Run Register or Login — token is saved automatically\n3. Create a confirmed order before processing payments",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "28174934"
+  },
+  "item": [
+    {
+      "name": "01. Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 201) {\n  const json = pm.response.json();\n  if (json.data && json.data.access_token) {\n    pm.collectionVariables.set('token', json.data.access_token);\n  }\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test3@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "register"
+              ]
+            },
+            "description": "Register a new user. dont worry your JWT token will be saved automaticlly on success (201)."
+          },
+          "response": [
+            {
+              "name": "failure example1 email taken",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test2@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "register"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:18:16 GMT, Wed, 21 Oct 2026 11:18:16 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed.\",\n  \"errors\": {\n    \"email\": [\n      \"This email is already registered.\"\n    ]\n  }\n}"
+            },
+            {
+              "name": "validation example Failed",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "register"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:20:29 GMT, Wed, 21 Oct 2026 11:20:29 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed.\",\n  \"errors\": {\n    \"name\": [\n      \"The name field is required.\"\n    ],\n    \"email\": [\n      \"The email field is required.\"\n    ],\n    \"password\": [\n      \"The password field is required.\"\n    ]\n  }\n}"
+            },
+            {
+              "name": "success and token saved",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test3@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/register",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:21:43 GMT, Wed, 21 Oct 2026 11:21:43 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User registered successfully.\",\n  \"data\": {\n    \"user\": {\n      \"name\": \"Test User\",\n      \"email\": \"test3@example.com\",\n      \"updated_at\": \"2026-10-21T11:21:43.000000Z\",\n      \"created_at\": \"2026-10-21T11:21:43.000000Z\",\n      \"id\": 3\n    },\n    \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL3JlZ2lzdGVyIiwiaWF0IjoxNzkyNTgxNzAzLCJleHAiOjE3OTI1ODUzMDMsIm5iZiI6MTc5MjU4MTcwMywianRpIjoiWWQzZ051UzNRSmY5Y2NQdyIsInN1YiI6IjMiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.Voy7d3u_NldyUjDQvyE0Po5ENkattcbYujsjSi_aTOc\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.data && json.data.access_token) {",
+                  "    pm.collectionVariables.set('token', json.data.access_token);",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Login and save JWT token to collection variable `token`."
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:23:57 GMT, Wed, 21 Oct 2026 11:23:57 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful.\",\n  \"data\": {\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"Test User\",\n      \"email\": \"test@example.com\",\n      \"email_verified_at\": null,\n      \"created_at\": \"2026-10-20T08:00:00.000000Z\",\n      \"updated_at\": \"2026-10-20T08:00:00.000000Z\"\n    },\n    \"access_token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwMDAvYXBpL2xvZ2luIiwiaWF0IjoxNzkyNTgxODM3LCJleHAiOjE3OTI1ODU0MzcsIm5iZiI6MTc5MjU4MTgzNywianRpIjoiU0pNYWtqblNXWGFSSWVHTCIsInN1YiI6IjEiLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.sYYXI_OJb5lFzf3TWzy5Inh-EqAyHgpX8TQA2cTPOK4\",\n    \"token_type\": \"bearer\",\n    \"expires_in\": 3600\n  }\n}"
+            },
+            {
+              "name": "failed wrong data",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"wrong_password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "login"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:24:24 GMT, Wed, 21 Oct 2026 11:24:24 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid email or password.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "me"
+              ]
+            },
+            "description": "Get authenticated user profile."
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/me",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "me"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:25:11 GMT, Wed, 21 Oct 2026 11:25:11 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User profile retrieved successfully.\",\n  \"data\": {\n    \"id\": 1,\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"email_verified_at\": null,\n    \"created_at\": \"2026-10-20T08:00:00.000000Z\",\n    \"updated_at\": \"2026-10-20T08:00:00.000000Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logout"
+              ]
+            },
+            "description": "Invalidate the current JWT token."
+          },
+          "response": [
+            {
+              "name": "success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/logout",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "logout"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:25:36 GMT, Wed, 21 Oct 2026 11:25:36 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Successfully logged out.\",\n  \"data\": null\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02. Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('order_id', String(json.data.id));",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Mohamed Adel\",\n  \"customer_email\": \"Mohamed@example.com\",\n  \"status\": \"confirmed\",\n  \"items\": [\n    { \"product_name\": \"Laptop\", \"quantity\": 1, \"unit_price\": 1500 },\n    { \"product_name\": \"Mouse\", \"quantity\": 2, \"unit_price\": 50 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            },
+            "description": "Create order with items. Total is calculated server-side. Saves `order_id`."
+          },
+          "response": [
+            {
+              "name": "Create Order success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_name\": \"Mohamed Adel\",\n  \"customer_email\": \"Mohamed@example.com\",\n  \"status\": \"confirmed\",\n  \"items\": [\n    { \"product_name\": \"Laptop\", \"quantity\": 1, \"unit_price\": 1500 },\n    { \"product_name\": \"Mouse\", \"quantity\": 2, \"unit_price\": 50 }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/orders",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:49:37 GMT, Wed, 21 Oct 2026 11:49:37 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Order created successfully.\",\n  \"data\": {\n    \"user_id\": 1,\n    \"customer_name\": \"Mohamed Adel\",\n    \"customer_email\": \"Mohamed@example.com\",\n    \"status\": \"confirmed\",\n    \"total_amount\": \"1600.00\",\n    \"updated_at\": \"2026-10-21T11:49:37.000000Z\",\n    \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n    \"id\": 4,\n    \"items\": [\n      {\n        \"id\": 7,\n        \"order_id\": 4,\n        \"product_name\": \"Laptop\",\n        \"quantity\": 1,\n        \"unit_price\": \"1500.00\",\n        \"line_total\": \"1500.00\",\n        \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n        \"updated_at\": \"2026-10-21T11:49:37.000000Z\"\n      },\n      {\n        \"id\": 8,\n        \"order_id\": 4,\n        \"product_name\": \"Mouse\",\n        \"quantity\": 2,\n        \"unit_price\": \"50.00\",\n        \"line_total\": \"100.00\",\n        \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n        \"updated_at\": \"2026-10-21T11:49:37.000000Z\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "validation error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_name\": \"Mohamed Adel\",\n  \"customer_email\": \"Mohamed@example.com\",\n  \"status\": \"confirmed\",\n  \"items\": [\n    \n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/orders",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:50:35 GMT, Wed, 21 Oct 2026 11:50:35 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed.\",\n  \"errors\": {\n    \"items\": [\n      \"At least one order item is required.\"\n    ]\n  }\n}"
+            },
+            {
+              "name": "status invalid",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_name\": \"Mohamed Adel\",\n  \"customer_email\": \"Mohamed@example.com\",\n  \"status\": \"processing\",\n  \"items\": [\n    { \"product_name\": \"Laptop\", \"quantity\": 1, \"unit_price\": 1500 },\n    { \"product_name\": \"Mouse\", \"quantity\": 2, \"unit_price\": 50 }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/orders",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:52:08 GMT, Wed, 21 Oct 2026 11:52:08 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed.\",\n  \"errors\": {\n    \"status\": [\n      \"The selected status is invalid.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            },
+            "description": "Paginated list of the authenticated user's orders."
+          },
+          "response": [
+            {
+              "name": "general and paginated list",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/orders",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:52:50 GMT, Wed, 21 Oct 2026 11:52:50 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Orders retrieved successfully.\",\n  \"data\": {\n    \"current_page\": 1,\n    \"data\": [\n      {\n        \"id\": 4,\n        \"user_id\": 1,\n        \"customer_name\": \"Mohamed Adel\",\n        \"customer_email\": \"Mohamed@example.com\",\n        \"status\": \"confirmed\",\n        \"total_amount\": \"1600.00\",\n        \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n        \"updated_at\": \"2026-10-21T11:49:37.000000Z\",\n        \"items\": [\n          {\n            \"id\": 7,\n            \"order_id\": 4,\n            \"product_name\": \"Laptop\",\n            \"quantity\": 1,\n            \"unit_price\": \"1500.00\",\n            \"line_total\": \"1500.00\",\n            \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n            \"updated_at\": \"2026-10-21T11:49:37.000000Z\"\n          },\n          {\n            \"id\": 8,\n            \"order_id\": 4,\n            \"product_name\": \"Mouse\",\n            \"quantity\": 2,\n            \"unit_price\": \"50.00\",\n            \"line_total\": \"100.00\",\n            \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n            \"updated_at\": \"2026-10-21T11:49:37.000000Z\"\n          }\n        ]\n      },\n      {\n        \"id\": 3,\n        \"user_id\": 1,\n        \"customer_name\": \"Ahmed\",\n        \"customer_email\": \"ahmed@example.com\",\n        \"status\": \"confirmed\",\n        \"total_amount\": \"1600.00\",\n        \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n        \"updated_at\": \"2026-10-20T21:17:08.000000Z\",\n        \"items\": [\n          {\n            \"id\": 5,\n            \"order_id\": 3,\n            \"product_name\": \"Laptop\",\n            \"quantity\": 1,\n            \"unit_price\": \"1500.00\",\n            \"line_total\": \"1500.00\",\n            \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n            \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n          },\n          {\n            \"id\": 6,\n            \"order_id\": 3,\n            \"product_name\": \"Mouse\",\n            \"quantity\": 2,\n            \"unit_price\": \"50.00\",\n            \"line_total\": \"100.00\",\n            \"created_at\": \"2026-10-20T21:17:09.000000Z\",\n            \"updated_at\": \"2026-10-20T21:17:09.000000Z\"\n          }\n        ]\n      },\n      {\n        \"id\": 2,\n        \"user_id\": 1,\n        \"customer_name\": \"Ahmed\",\n        \"customer_email\": \"ahmed@example.com\",\n        \"status\": \"pending\",\n        \"total_amount\": \"100.00\",\n        \"created_at\": \"2026-10-20T21:17:07.000000Z\",\n        \"updated_at\": \"2026-10-20T21:17:07.000000Z\",\n        \"items\": [\n          {\n            \"id\": 4,\n            \"order_id\": 2,\n            \"product_name\": \"Book\",\n            \"quantity\": 1,\n            \"unit_price\": \"100.00\",\n            \"line_total\": \"100.00\",\n            \"created_at\": \"2026-10-20T21:17:07.000000Z\",\n            \"updated_at\": \"2026-10-20T21:17:07.000000Z\"\n          }\n        ]\n      }\n    ],\n    \"first_page_url\": \"http://127.0.0.1:8000/api/orders?page=1\",\n    \"from\": 1,\n    \"last_page\": 1,\n    \"last_page_url\": \"http://127.0.0.1:8000/api/orders?page=1\",\n    \"links\": [\n      {\n        \"url\": null,\n        \"label\": \"&laquo; Previous\",\n        \"page\": null,\n        \"active\": false\n      },\n      {\n        \"url\": \"http://127.0.0.1:8000/api/orders?page=1\",\n        \"label\": \"1\",\n        \"page\": 1,\n        \"active\": true\n      },\n      {\n        \"url\": null,\n        \"label\": \"Next &raquo;\",\n        \"page\": null,\n        \"active\": false\n      }\n    ],\n    \"next_page_url\": null,\n    \"path\": \"http://127.0.0.1:8000/api/orders\",\n    \"per_page\": 15,\n    \"prev_page_url\": null,\n    \"to\": 3,\n    \"total\": 3\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List By Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders?status=confirmed&per_page=15",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "confirmed"
+                },
+                {
+                  "key": "per_page",
+                  "value": "15"
+                }
+              ]
+            },
+            "description": "Filter orders by status: pending | confirmed | cancelled."
+          },
+          "response": [
+            {
+              "name": "List By Status and paginated number",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/orders?status=confirmed&per_page=15",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "status",
+                      "value": "confirmed"
+                    },
+                    {
+                      "key": "per_page",
+                      "value": "15"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:54:07 GMT, Wed, 21 Oct 2026 11:54:07 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Orders retrieved successfully.\",\n  \"data\": {\n    \"current_page\": 1,\n    \"data\": [\n      {\n        \"id\": 4,\n        \"user_id\": 1,\n        \"customer_name\": \"Mohamed Adel\",\n        \"customer_email\": \"Mohamed@example.com\",\n        \"status\": \"confirmed\",\n        \"total_amount\": \"1600.00\",\n        \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n        \"updated_at\": \"2026-10-21T11:49:37.000000Z\",\n        \"items\": [\n          {\n            \"id\": 7,\n            \"order_id\": 4,\n            \"product_name\": \"Laptop\",\n            \"quantity\": 1,\n            \"unit_price\": \"1500.00\",\n            \"line_total\": \"1500.00\",\n            \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n            \"updated_at\": \"2026-10-21T11:49:37.000000Z\"\n          },\n          {\n            \"id\": 8,\n            \"order_id\": 4,\n            \"product_name\": \"Mouse\",\n            \"quantity\": 2,\n            \"unit_price\": \"50.00\",\n            \"line_total\": \"100.00\",\n            \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n            \"updated_at\": \"2026-10-21T11:49:37.000000Z\"\n          }\n        ]\n      },\n      {\n        \"id\": 3,\n        \"user_id\": 1,\n        \"customer_name\": \"Ahmed\",\n        \"customer_email\": \"ahmed@example.com\",\n        \"status\": \"confirmed\",\n        \"total_amount\": \"1600.00\",\n        \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n        \"updated_at\": \"2026-10-20T21:17:08.000000Z\",\n        \"items\": [\n          {\n            \"id\": 5,\n            \"order_id\": 3,\n            \"product_name\": \"Laptop\",\n            \"quantity\": 1,\n            \"unit_price\": \"1500.00\",\n            \"line_total\": \"1500.00\",\n            \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n            \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n          },\n          {\n            \"id\": 6,\n            \"order_id\": 3,\n            \"product_name\": \"Mouse\",\n            \"quantity\": 2,\n            \"unit_price\": \"50.00\",\n            \"line_total\": \"100.00\",\n            \"created_at\": \"2026-10-20T21:17:09.000000Z\",\n            \"updated_at\": \"2026-10-20T21:17:09.000000Z\"\n          }\n        ]\n      }\n    ],\n    \"first_page_url\": \"http://127.0.0.1:8000/api/orders?page=1\",\n    \"from\": 1,\n    \"last_page\": 1,\n    \"last_page_url\": \"http://127.0.0.1:8000/api/orders?page=1\",\n    \"links\": [\n      {\n        \"url\": null,\n        \"label\": \"&laquo; Previous\",\n        \"page\": null,\n        \"active\": false\n      },\n      {\n        \"url\": \"http://127.0.0.1:8000/api/orders?page=1\",\n        \"label\": \"1\",\n        \"page\": 1,\n        \"active\": true\n      },\n      {\n        \"url\": null,\n        \"label\": \"Next &raquo;\",\n        \"page\": null,\n        \"active\": false\n      }\n    ],\n    \"next_page_url\": null,\n    \"path\": \"http://127.0.0.1:8000/api/orders\",\n    \"per_page\": 15,\n    \"prev_page_url\": null,\n    \"to\": 2,\n    \"total\": 2\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Show Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders",
+                "{{order_id}}"
+              ]
+            },
+            "description": "Show a single order owned by the authenticated user."
+          },
+          "response": [
+            {
+              "name": "Show Order success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/orders/{{order_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "{{order_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:54:49 GMT, Wed, 21 Oct 2026 11:54:49 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Order retrieved successfully.\",\n  \"data\": {\n    \"id\": 4,\n    \"user_id\": 1,\n    \"customer_name\": \"Mohamed Adel\",\n    \"customer_email\": \"Mohamed@example.com\",\n    \"status\": \"confirmed\",\n    \"total_amount\": \"1600.00\",\n    \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n    \"updated_at\": \"2026-10-21T11:49:37.000000Z\",\n    \"items\": [\n      {\n        \"id\": 7,\n        \"order_id\": 4,\n        \"product_name\": \"Laptop\",\n        \"quantity\": 1,\n        \"unit_price\": \"1500.00\",\n        \"line_total\": \"1500.00\",\n        \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n        \"updated_at\": \"2026-10-21T11:49:37.000000Z\"\n      },\n      {\n        \"id\": 8,\n        \"order_id\": 4,\n        \"product_name\": \"Mouse\",\n        \"quantity\": 2,\n        \"unit_price\": \"50.00\",\n        \"line_total\": \"100.00\",\n        \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n        \"updated_at\": \"2026-10-21T11:49:37.000000Z\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "not found Order",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/orders/9999",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "9999"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:55:20 GMT, Wed, 21 Oct 2026 11:55:20 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Order not found.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Mohamed Adel\",\n  \"customer_email\": \"Mohamed@example.com\",\n  \"status\": \"pending\",\n  \"items\": [\n    { \"product_name\": \"Laptop Pro\", \"quantity\": 1, \"unit_price\": 1800 }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders",
+                "{{order_id}}"
+              ]
+            },
+            "description": "Full item sync: old items deleted, new items created, total recalculated."
+          },
+          "response": [
+            {
+              "name": "Update Order success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"customer_name\": \"Mohamed Adel\",\n  \"customer_email\": \"Mohamed@example.com\",\n  \"status\": \"pending\",\n  \"items\": [\n    { \"product_name\": \"Laptop Pro\", \"quantity\": 1, \"unit_price\": 1800 }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/orders/{{order_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "{{order_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:56:24 GMT, Wed, 21 Oct 2026 11:56:24 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Order updated successfully.\",\n  \"data\": {\n    \"id\": 4,\n    \"user_id\": 1,\n    \"customer_name\": \"Mohamed Adel\",\n    \"customer_email\": \"Mohamed@example.com\",\n    \"status\": \"pending\",\n    \"total_amount\": \"1800.00\",\n    \"created_at\": \"2026-10-21T11:49:37.000000Z\",\n    \"updated_at\": \"2026-10-21T11:56:24.000000Z\",\n    \"items\": [\n      {\n        \"id\": 9,\n        \"order_id\": 4,\n        \"product_name\": \"Laptop Pro\",\n        \"quantity\": 1,\n        \"unit_price\": \"1800.00\",\n        \"line_total\": \"1800.00\",\n        \"created_at\": \"2026-10-21T11:56:24.000000Z\",\n        \"updated_at\": \"2026-10-21T11:56:24.000000Z\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Update Order validation error",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/orders/{{order_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "{{order_id}}"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:56:57 GMT, Wed, 21 Oct 2026 11:56:57 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed.\",\n  \"errors\": {\n    \"customer_name\": [\n      \"The customer name is required.\"\n    ],\n    \"customer_email\": [\n      \"The customer email is required.\"\n    ],\n    \"items\": [\n      \"At least one order item is required.\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders",
+                "{{order_id}}"
+              ]
+            },
+            "description": "Delete order only if it has no associated payments (otherwise 409)."
+          },
+          "response": [
+            {
+              "name": "Delete not found Order",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/orders/{{order_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "{{order_id}}"
+                  ]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:57:44 GMT, Wed, 21 Oct 2026 11:57:44 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Order not found.\"\n}"
+            },
+            {
+              "name": "Delete Order success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/orders/{{order_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "{{order_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:58:16 GMT, Wed, 21 Oct 2026 11:58:16 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Order deleted successfully.\",\n  \"data\": null\n}"
+            },
+            {
+              "name": "Delete Order with payment",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/orders/{{order_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "{{order_id}}"
+                  ]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:07:14 GMT, Wed, 21 Oct 2026 12:07:14 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Order cannot be deleted because it has associated payments.\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03. Payments",
+      "item": [
+        {
+          "name": "Process Payment (Stripe)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const json = pm.response.json();",
+                  "  if (json.data && json.data.id) {",
+                  "    pm.collectionVariables.set('payment_id', String(json.data.id));",
+                  "  }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"stripe\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "description": "Process payment via Stripe strategy. Order must be confirmed. Saves `payment_id`."
+          },
+          "response": [
+            {
+              "name": "Process Payment (Stripe) with not confirmed order",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"stripe\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:03:34 GMT, Wed, 21 Oct 2026 12:03:34 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Payments can only be processed for confirmed orders.\"\n}"
+            },
+            {
+              "name": "Process Payment (Stripe) success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"stripe\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:04:30 GMT, Wed, 21 Oct 2026 12:04:30 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Payment processed successfully.\",\n  \"data\": {\n    \"order_id\": 3,\n    \"gateway\": \"stripe\",\n    \"amount\": \"1600.00\",\n    \"status\": \"successful\",\n    \"transaction_reference\": \"ST-C9Q5LD3A58ZJ\",\n    \"meta\": {\n      \"gateway\": \"stripe\",\n      \"simulated\": true,\n      \"publishable_key\": \"pk_test_demo\",\n      \"order_id\": 3,\n      \"amount\": 1600,\n      \"currency\": \"USD\",\n      \"charge_id\": \"ch_0yawybp6elzpndk2\",\n      \"gateway_message\": \"Stripe payment processed successfully.\"\n    },\n    \"updated_at\": \"2026-10-21T12:04:30.000000Z\",\n    \"created_at\": \"2026-10-21T12:04:30.000000Z\",\n    \"id\": 4,\n    \"order\": {\n      \"id\": 3,\n      \"user_id\": 1,\n      \"customer_name\": \"Ahmed\",\n      \"customer_email\": \"ahmed@example.com\",\n      \"status\": \"confirmed\",\n      \"total_amount\": \"1600.00\",\n      \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n      \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Process Payment (PayPal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"paypal\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "description": "Process payment via PayPal strategy."
+          },
+          "response": [
+            {
+              "name": "Process Payment (PayPal) with unconfirmed order",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"paypal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:04:54 GMT, Wed, 21 Oct 2026 12:04:54 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Payments can only be processed for confirmed orders.\"\n}"
+            },
+            {
+              "name": "Process Payment (PayPal)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"paypal\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:05:30 GMT, Wed, 21 Oct 2026 12:05:30 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Payment processed successfully.\",\n  \"data\": {\n    \"order_id\": 3,\n    \"gateway\": \"paypal\",\n    \"amount\": \"1600.00\",\n    \"status\": \"successful\",\n    \"transaction_reference\": \"PP-MSCJFMC3AEYA\",\n    \"meta\": {\n      \"gateway\": \"paypal\",\n      \"simulated\": true,\n      \"client_id\": \"demo-paypal-client\",\n      \"order_id\": 3,\n      \"amount\": 1600,\n      \"currency\": \"USD\",\n      \"payer_email\": \"ahmed@example.com\",\n      \"gateway_message\": \"PayPal payment processed successfully.\"\n    },\n    \"updated_at\": \"2026-10-21T12:05:30.000000Z\",\n    \"created_at\": \"2026-10-21T12:05:30.000000Z\",\n    \"id\": 5,\n    \"order\": {\n      \"id\": 3,\n      \"user_id\": 1,\n      \"customer_name\": \"Ahmed\",\n      \"customer_email\": \"ahmed@example.com\",\n      \"status\": \"confirmed\",\n      \"total_amount\": \"1600.00\",\n      \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n      \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Process Payment (Credit Card)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"credit_card\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "description": "Process payment via Credit Card strategy."
+          },
+          "response": [
+            {
+              "name": "Process Payment (Credit Card) with unconfirmed order",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"credit_card\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:05:48 GMT, Wed, 21 Oct 2026 12:05:48 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Payments can only be processed for confirmed orders.\"\n}"
+            },
+            {
+              "name": "Process Payment (Credit Card)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"credit_card\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "text"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:06:17 GMT, Wed, 21 Oct 2026 12:06:17 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Payment processed successfully.\",\n  \"data\": {\n    \"order_id\": 3,\n    \"gateway\": \"credit_card\",\n    \"amount\": \"1600.00\",\n    \"status\": \"successful\",\n    \"transaction_reference\": \"CC-QQN3TGKRFOI7\",\n    \"meta\": {\n      \"gateway\": \"credit_card\",\n      \"simulated\": true,\n      \"merchant_id\": \"demo-merchant\",\n      \"order_id\": 3,\n      \"amount\": 1600,\n      \"currency\": \"USD\",\n      \"card_brand\": \"visa\",\n      \"last4\": \"4242\",\n      \"gateway_message\": \"Credit card payment processed successfully.\"\n    },\n    \"updated_at\": \"2026-10-21T12:06:17.000000Z\",\n    \"created_at\": \"2026-10-21T12:06:17.000000Z\",\n    \"id\": 6,\n    \"order\": {\n      \"id\": 3,\n      \"user_id\": 1,\n      \"customer_name\": \"Ahmed\",\n      \"customer_email\": \"ahmed@example.com\",\n      \"status\": \"confirmed\",\n      \"total_amount\": \"1600.00\",\n      \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n      \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Payments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "description": "Paginated list of payments for the authenticated user."
+          },
+          "response": [
+            {
+              "name": "List Payments success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/payments",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:58:50 GMT, Wed, 21 Oct 2026 11:58:50 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Payments retrieved successfully.\",\n  \"data\": {\n    \"current_page\": 1,\n    \"data\": [\n      {\n        \"id\": 3,\n        \"order_id\": 3,\n        \"gateway\": \"credit_card\",\n        \"amount\": \"1600.00\",\n        \"status\": \"successful\",\n        \"transaction_reference\": \"CC-NME2ZCFFJYUQ\",\n        \"meta\": {\n          \"gateway\": \"credit_card\",\n          \"simulated\": true,\n          \"merchant_id\": \"demo-merchant\",\n          \"order_id\": 3,\n          \"amount\": 1600,\n          \"currency\": \"USD\",\n          \"card_brand\": \"visa\",\n          \"last4\": \"4242\",\n          \"gateway_message\": \"Credit card payment processed successfully.\"\n        },\n        \"created_at\": \"2026-10-20T21:17:11.000000Z\",\n        \"updated_at\": \"2026-10-20T21:17:11.000000Z\",\n        \"order\": {\n          \"id\": 3,\n          \"user_id\": 1,\n          \"customer_name\": \"Ahmed\",\n          \"customer_email\": \"ahmed@example.com\",\n          \"status\": \"confirmed\",\n          \"total_amount\": \"1600.00\",\n          \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n          \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n        }\n      },\n      {\n        \"id\": 2,\n        \"order_id\": 3,\n        \"gateway\": \"paypal\",\n        \"amount\": \"1600.00\",\n        \"status\": \"successful\",\n        \"transaction_reference\": \"PP-1Q2DKL7X7QAZ\",\n        \"meta\": {\n          \"gateway\": \"paypal\",\n          \"simulated\": true,\n          \"client_id\": \"demo-paypal-client\",\n          \"order_id\": 3,\n          \"amount\": 1600,\n          \"currency\": \"USD\",\n          \"payer_email\": \"ahmed@example.com\",\n          \"gateway_message\": \"PayPal payment processed successfully.\"\n        },\n        \"created_at\": \"2026-10-20T21:17:10.000000Z\",\n        \"updated_at\": \"2026-10-20T21:17:10.000000Z\",\n        \"order\": {\n          \"id\": 3,\n          \"user_id\": 1,\n          \"customer_name\": \"Ahmed\",\n          \"customer_email\": \"ahmed@example.com\",\n          \"status\": \"confirmed\",\n          \"total_amount\": \"1600.00\",\n          \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n          \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n        }\n      },\n      {\n        \"id\": 1,\n        \"order_id\": 3,\n        \"gateway\": \"stripe\",\n        \"amount\": \"1600.00\",\n        \"status\": \"successful\",\n        \"transaction_reference\": \"ST-P6C87P1LWE54\",\n        \"meta\": {\n          \"gateway\": \"stripe\",\n          \"simulated\": true,\n          \"publishable_key\": \"pk_test_demo\",\n          \"order_id\": 3,\n          \"amount\": 1600,\n          \"currency\": \"USD\",\n          \"charge_id\": \"ch_nph0djn8fwiyut9e\",\n          \"gateway_message\": \"Stripe payment processed successfully.\"\n        },\n        \"created_at\": \"2026-10-20T21:17:09.000000Z\",\n        \"updated_at\": \"2026-10-20T21:17:09.000000Z\",\n        \"order\": {\n          \"id\": 3,\n          \"user_id\": 1,\n          \"customer_name\": \"Ahmed\",\n          \"customer_email\": \"ahmed@example.com\",\n          \"status\": \"confirmed\",\n          \"total_amount\": \"1600.00\",\n          \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n          \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n        }\n      }\n    ],\n    \"first_page_url\": \"http://127.0.0.1:8000/api/payments?page=1\",\n    \"from\": 1,\n    \"last_page\": 1,\n    \"last_page_url\": \"http://127.0.0.1:8000/api/payments?page=1\",\n    \"links\": [\n      {\n        \"url\": null,\n        \"label\": \"&laquo; Previous\",\n        \"page\": null,\n        \"active\": false\n      },\n      {\n        \"url\": \"http://127.0.0.1:8000/api/payments?page=1\",\n        \"label\": \"1\",\n        \"page\": 1,\n        \"active\": true\n      },\n      {\n        \"url\": null,\n        \"label\": \"Next &raquo;\",\n        \"page\": null,\n        \"active\": false\n      }\n    ],\n    \"next_page_url\": null,\n    \"path\": \"http://127.0.0.1:8000/api/payments\",\n    \"per_page\": 15,\n    \"prev_page_url\": null,\n    \"to\": 3,\n    \"total\": 3\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List Payments By Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/payments?order_id={{order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ],
+              "query": [
+                {
+                  "key": "order_id",
+                  "value": "{{order_id}}"
+                }
+              ]
+            },
+            "description": "Filter payments by order_id."
+          },
+          "response": [
+            {
+              "name": "List Payments By deleted Order",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/payments?order_id={{order_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ],
+                  "query": [
+                    {
+                      "key": "order_id",
+                      "value": "{{order_id}}"
+                    }
+                  ]
+                }
+              },
+              "status": "Unprocessable Content",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 11:59:33 GMT, Wed, 21 Oct 2026 11:59:33 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed.\",\n  \"errors\": {\n    \"order_id\": [\n      \"The selected order id is invalid.\"\n    ]\n  }\n}"
+            },
+            {
+              "name": "List Payments By Order hasn't contain payments yet",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/payments?order_id={{order_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ],
+                  "query": [
+                    {
+                      "key": "order_id",
+                      "value": "{{order_id}}"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:00:27 GMT, Wed, 21 Oct 2026 12:00:27 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Payments retrieved successfully.\",\n  \"data\": {\n    \"current_page\": 1,\n    \"data\": [],\n    \"first_page_url\": \"http://127.0.0.1:8000/api/payments?page=1\",\n    \"from\": null,\n    \"last_page\": 1,\n    \"last_page_url\": \"http://127.0.0.1:8000/api/payments?page=1\",\n    \"links\": [\n      {\n        \"url\": null,\n        \"label\": \"&laquo; Previous\",\n        \"page\": null,\n        \"active\": false\n      },\n      {\n        \"url\": \"http://127.0.0.1:8000/api/payments?page=1\",\n        \"label\": \"1\",\n        \"page\": 1,\n        \"active\": true\n      },\n      {\n        \"url\": null,\n        \"label\": \"Next &raquo;\",\n        \"page\": null,\n        \"active\": false\n      }\n    ],\n    \"next_page_url\": null,\n    \"path\": \"http://127.0.0.1:8000/api/payments\",\n    \"per_page\": 15,\n    \"prev_page_url\": null,\n    \"to\": null,\n    \"total\": 0\n  }\n}"
+            },
+            {
+              "name": "List Payments By Order has data",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/payments?order_id={{order_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ],
+                  "query": [
+                    {
+                      "key": "order_id",
+                      "value": "{{order_id}}"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:01:45 GMT, Wed, 21 Oct 2026 12:01:45 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Payments retrieved successfully.\",\n  \"data\": {\n    \"current_page\": 1,\n    \"data\": [\n      {\n        \"id\": 3,\n        \"order_id\": 3,\n        \"gateway\": \"credit_card\",\n        \"amount\": \"1600.00\",\n        \"status\": \"successful\",\n        \"transaction_reference\": \"CC-NME2ZCFFJYUQ\",\n        \"meta\": {\n          \"gateway\": \"credit_card\",\n          \"simulated\": true,\n          \"merchant_id\": \"demo-merchant\",\n          \"order_id\": 3,\n          \"amount\": 1600,\n          \"currency\": \"USD\",\n          \"card_brand\": \"visa\",\n          \"last4\": \"4242\",\n          \"gateway_message\": \"Credit card payment processed successfully.\"\n        },\n        \"created_at\": \"2026-10-20T21:17:11.000000Z\",\n        \"updated_at\": \"2026-10-20T21:17:11.000000Z\",\n        \"order\": {\n          \"id\": 3,\n          \"user_id\": 1,\n          \"customer_name\": \"Ahmed\",\n          \"customer_email\": \"ahmed@example.com\",\n          \"status\": \"confirmed\",\n          \"total_amount\": \"1600.00\",\n          \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n          \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n        }\n      },\n      {\n        \"id\": 2,\n        \"order_id\": 3,\n        \"gateway\": \"paypal\",\n        \"amount\": \"1600.00\",\n        \"status\": \"successful\",\n        \"transaction_reference\": \"PP-1Q2DKL7X7QAZ\",\n        \"meta\": {\n          \"gateway\": \"paypal\",\n          \"simulated\": true,\n          \"client_id\": \"demo-paypal-client\",\n          \"order_id\": 3,\n          \"amount\": 1600,\n          \"currency\": \"USD\",\n          \"payer_email\": \"ahmed@example.com\",\n          \"gateway_message\": \"PayPal payment processed successfully.\"\n        },\n        \"created_at\": \"2026-10-20T21:17:10.000000Z\",\n        \"updated_at\": \"2026-10-20T21:17:10.000000Z\",\n        \"order\": {\n          \"id\": 3,\n          \"user_id\": 1,\n          \"customer_name\": \"Ahmed\",\n          \"customer_email\": \"ahmed@example.com\",\n          \"status\": \"confirmed\",\n          \"total_amount\": \"1600.00\",\n          \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n          \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n        }\n      },\n      {\n        \"id\": 1,\n        \"order_id\": 3,\n        \"gateway\": \"stripe\",\n        \"amount\": \"1600.00\",\n        \"status\": \"successful\",\n        \"transaction_reference\": \"ST-P6C87P1LWE54\",\n        \"meta\": {\n          \"gateway\": \"stripe\",\n          \"simulated\": true,\n          \"publishable_key\": \"pk_test_demo\",\n          \"order_id\": 3,\n          \"amount\": 1600,\n          \"currency\": \"USD\",\n          \"charge_id\": \"ch_nph0djn8fwiyut9e\",\n          \"gateway_message\": \"Stripe payment processed successfully.\"\n        },\n        \"created_at\": \"2026-10-20T21:17:09.000000Z\",\n        \"updated_at\": \"2026-10-20T21:17:09.000000Z\",\n        \"order\": {\n          \"id\": 3,\n          \"user_id\": 1,\n          \"customer_name\": \"Ahmed\",\n          \"customer_email\": \"ahmed@example.com\",\n          \"status\": \"confirmed\",\n          \"total_amount\": \"1600.00\",\n          \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n          \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n        }\n      }\n    ],\n    \"first_page_url\": \"http://127.0.0.1:8000/api/payments?page=1\",\n    \"from\": 1,\n    \"last_page\": 1,\n    \"last_page_url\": \"http://127.0.0.1:8000/api/payments?page=1\",\n    \"links\": [\n      {\n        \"url\": null,\n        \"label\": \"&laquo; Previous\",\n        \"page\": null,\n        \"active\": false\n      },\n      {\n        \"url\": \"http://127.0.0.1:8000/api/payments?page=1\",\n        \"label\": \"1\",\n        \"page\": 1,\n        \"active\": true\n      },\n      {\n        \"url\": null,\n        \"label\": \"Next &raquo;\",\n        \"page\": null,\n        \"active\": false\n      }\n    ],\n    \"next_page_url\": null,\n    \"path\": \"http://127.0.0.1:8000/api/payments\",\n    \"per_page\": 15,\n    \"prev_page_url\": null,\n    \"to\": 3,\n    \"total\": 3\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Show Payment",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/payments/{{payment_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments",
+                "{{payment_id}}"
+              ]
+            },
+            "description": "Show a single payment owned by the authenticated user."
+          },
+          "response": [
+            {
+              "name": "Show Payment data by id",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/payments/{{payment_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "payments",
+                    "{{payment_id}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "host",
+                  "value": "127.0.0.1:8000"
+                },
+                {
+                  "key": "date",
+                  "value": "Wed, 21 Oct 2026 12:02:25 GMT, Wed, 21 Oct 2026 12:02:25 GMT"
+                },
+                {
+                  "key": "connection",
+                  "value": "close"
+                },
+                {
+                  "key": "x-powered-by",
+                  "value": "PHP/8.2.4"
+                },
+                {
+                  "key": "cache-control",
+                  "value": "no-cache, private"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Payment retrieved successfully.\",\n  \"data\": {\n    \"id\": 3,\n    \"order_id\": 3,\n    \"gateway\": \"credit_card\",\n    \"amount\": \"1600.00\",\n    \"status\": \"successful\",\n    \"transaction_reference\": \"CC-NME2ZCFFJYUQ\",\n    \"meta\": {\n      \"gateway\": \"credit_card\",\n      \"simulated\": true,\n      \"merchant_id\": \"demo-merchant\",\n      \"order_id\": 3,\n      \"amount\": 1600,\n      \"currency\": \"USD\",\n      \"card_brand\": \"visa\",\n      \"last4\": \"4242\",\n      \"gateway_message\": \"Credit card payment processed successfully.\"\n    },\n    \"created_at\": \"2026-10-20T21:17:11.000000Z\",\n    \"updated_at\": \"2026-10-20T21:17:11.000000Z\",\n    \"order\": {\n      \"id\": 3,\n      \"user_id\": 1,\n      \"customer_name\": \"Ahmed\",\n      \"customer_email\": \"ahmed@example.com\",\n      \"status\": \"confirmed\",\n      \"total_amount\": \"1600.00\",\n      \"created_at\": \"2026-10-20T21:17:08.000000Z\",\n      \"updated_at\": \"2026-10-20T21:17:08.000000Z\"\n    }\n  }\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04. Error Cases",
+      "item": [
+        {
+          "name": "Login Invalid Credentials",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"wrong-password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "description": "Expected: 401 Invalid email or password."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Order Validation Error",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_name\": \"Mohamed\",\n  \"customer_email\": \"Mohamed@example.com\",\n  \"items\": []\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders"
+              ]
+            },
+            "description": "Expected: 422 Validation failed (items min:1)."
+          },
+          "response": []
+        },
+        {
+          "name": "Pay Unconfirmed Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"order_id\": {{order_id}},\n  \"gateway\": \"stripe\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "description": "Use a pending order_id. Expected: 422 Payments can only be processed for confirmed orders."
+          },
+          "response": []
+        },
+        {
+          "name": "Access Another User Order",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders/999999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders",
+                "999999"
+              ]
+            },
+            "description": "Expected: 404 Order not found (ownership)."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Order With Payments",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/orders/{{order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "orders",
+                "{{order_id}}"
+              ]
+            },
+            "description": "After a successful payment on the order. Expected: 409 Order cannot be deleted because it has associated payments."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "order_id",
+      "value": ""
+    },
+    {
+      "key": "payment_id",
+      "value": ""
+    }
+  ]
+}

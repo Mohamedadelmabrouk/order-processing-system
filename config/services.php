@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    'credit_card' => [
+        'merchant_id' => env('CREDIT_CARD_MERCHANT_ID'),
+        'api_key' => env('CREDIT_CARD_API_KEY'),
+    ],
+
+    'paypal' => [
+        'client_id' => env('PAYPAL_CLIENT_ID'),
+        'client_secret' => env('PAYPAL_CLIENT_SECRET'),
+    ],
+
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+    ],
+
 ];
+
